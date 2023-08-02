@@ -1,0 +1,31 @@
+#! /usr/bin/python3
+
+from optparse import OptionParser
+import psutil
+
+parser = OptionParser()
+
+parser.add_option("-n", "--numcpu", action="store_true", dest="numcpu", default=False, help="Print the number of CPU cores")
+parser.add_option("-c", "--cpu", action="store_true", dest="cpu", default=False, help="Prints the cpu percentage")
+parser.add_option("-l", "--load", action="store_true", dest="loadavg", default=False, help="Print the load average")
+parser.add_option("-s", "--stream", action="store_true", dest="stream", default=False, help="Continously stream the values")
+                 
+(options, args) = parser.parse_args()
+
+try:
+    if options.ensure_value('numcpu', False) == True:
+        print("Number of CPUs : ", psutil.cpu_count())
+    if options.ensure_value('cpu', False):
+        if options.ensure_value('stream', False) == True:
+            while True:
+                print("\rCPU Percentage : ", psutil.cpu_percent(1),"%", end="  "),
+        else:
+            print("CPU Percentage", psutil.cpu_percent(1),"%")
+    if options.ensure_value('loadavg', False) == True:
+        if options.ensure_value('stream', False) == True:
+            while True:
+                print("\rLoad Average : ", psutil.getloadavg(), end="  "),
+        print(psutil.getloadavg())
+
+except KeyboardInterrupt:
+    pass
